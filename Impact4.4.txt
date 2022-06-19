@@ -4,7 +4,7 @@ if game.Players.LocalPlayer.UserId ==
 "3492265466"
 "3615592453"
 "3631130108"
- wait(1)
+ then
 local SytroWaterMark = Instance.new("ScreenGui")
 local TextLabel = Instance.new("TextButton")
 local UIGradient = Instance.new("UIGradient")
