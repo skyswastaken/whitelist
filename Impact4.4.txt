@@ -1,10 +1,3 @@
-if game.Players.LocalPlayer.UserId == 
-"911171572"
-"3488094090"
-"3492265466"
-"3615592453"
-"3631130108"
- then
 local SytroWaterMark = Instance.new("ScreenGui")
 local TextLabel = Instance.new("TextButton")
 local UIGradient = Instance.new("UIGradient")
