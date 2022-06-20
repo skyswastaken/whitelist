@@ -325,59 +325,29 @@ local function getEquipped()
 end
 
 
-function getbeds()
-	local beds = {}
-	local blocks = game:GetService("Workspace").Map.Blocks
-	for ,Block in pairs(blocks:GetChildren()) do
-		if Block.Name == "bed" and Block.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
-			table.insert(beds,Block)
+local function getwool()
+	for i5, v5 in pairs(getinv(lplr)["items"]) do
+		if v5["itemType"]:match("wool") or v5["itemType"]:match("grass") then
+			return v5["itemType"], v5["amount"]
 		end
-	end
-	return beds
+	end	
+	return nil
 end
 
-function getbedsblocks()
-	local blockstb = {}
-	local blocks = game:GetService("Workspace").Map.Blocks
-	for i,v in pairs(blocks:GetChildren()) do
-		if v:IsA("Part") then
-			table.insert(blockstb,v)
-		end
-	end
-	return blockstb
-end
+local Flamework = require(game.ReplicatedStorage["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
+repeat task.wait() until (Flamework.isInitialized)
 
-function blocks(bed)
-	local aboveblocks = 0
-	local Blocks = getbedsblocks()
-	for ,Block in pairs(Blocks) do
-		if Block.Position.X == bed.X and Block.Position.Z == bed.Z and Block.Name ~= "bed" and (Block.Position.Y - bed.Y) <= 9 and Block.Position.Y > bed.Y then
-			aboveblocks = aboveblocks + 1
-		end
-	end
-	return aboveblocks
+local BlockController2 = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["block-engine"].out.client.placement["block-placer"]).BlockPlacer
+local blockcontroller = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["block-engine"].out).BlockEngine
+local BlockEngine = require(lplr.PlayerScripts.TS.lib["block-engine"]["client-block-engine"]).ClientBlockEngine
+local blocktable = BlockController2.new(BlockEngine, getwool())
+function placeblockthing(newpos, customblock)
+    local placeblocktype = (customblock or getwool())
+    blocktable.blockType = placeblocktype
+    if blockcontroller:isAllowedPlacement(lplr, placeblocktype, Vector3.new(newpos.X / 3, newpos.Y / 3, newpos.Z / 3)) and getItem(placeblocktype) then
+        return blocktable:placeBlock(Vector3.new(newpos.X / 3, newpos.Y / 3, newpos.Z / 3))
+    end
 end
-
-function nuker()
-	local beds = getbeds()
-	for _,bed in pairs(beds) do
-		local bedmagnitude = (bed.Position - game.Players.LocalPlayer.Character.PrimaryPart.Position).Magnitude
-		if bedmagnitude < 27 then
-			local upnum = blocks(bed.Position)
-			local x = math.round(bed.Position.X/3)
-			local y = math.round(bed.Position.Y/3) + upnum
-			local z = math.round(bed.Position.Z/3)
-			game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.DamageBlock:InvokeServer({
-				["blockRef"] = {
-					["blockPosition"] = Vector3.new(x,y,z)
-				},
-				["hitPosition"] = Vector3.new(x,y,z),
-				["hitNormal"] = Vector3.new(x,y,z),
-			})
-		end
-	end
-end
-
 
 
 
@@ -577,7 +547,7 @@ end)
 Tab1Section:NewToggle("BedNuker ", "Auto break bed and covers", function(state)
 	if state then
 		BindToStepped("BedNuker", 1, function()
-			nuker()
+			getwool()
 		end)
 	else
 		UnbindFromStepped("BedNuker")
@@ -695,7 +665,165 @@ end
 end)
 
 Tab3Section:NewButton("Auto Report","Opens AR",function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/joeengo/Auto-Report/main/main.lua", true))()
+--[[
+
+	This property is protected.
+	You are not allowed to claim this as your own.
+	Removal of advertisements of https://www.discord.gg/outliershub is prohibited.
+	Removal of initial credits to the authors is prohibited.
+
+]]
+
+setfflag("AbuseReportScreenshotPercentage", 0)
+setfflag("DFFlagAbuseReportScreenshot", "False") 
+
+local Default = {
+	Advertise = true;
+	Safe = false;
+	Webhook = "https://discord.com/api/webhooks/987777894719848519/Gn_u5Bf0JwwAtW5GTri3RWGTfhbmojl0QTmrVTCQdijDYhBNUM5z_Tr99p21EuEz67eC";
+	
+	Words = {
+	    Blacklist = "https://raw.githubusercontent.com/PrototypeHub/auto-report/main/BlackListed.lua";
+	    Whitelist = "https://raw.githubusercontent.com/CF-Trail/Auto-Report/main/words/whitelisted.lua";
+	};
+}
+
+if not getgenv().autoreport then
+	getgenv().autoreport = Default
+end;
+
+for _,v in next, Default do
+	if not getgenv().autoreport[_] then getgenv().autoreport[_] = v end
+end
+
+if (getgenv()).autoreport.library == nil then
+	(getgenv()).autoreport.library = (loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source")))();
+end;
+
+local messages = {
+	blacklisted = loadstring(game:HttpGet(getgenv().autoreport.Words.Blacklist))(),
+	whitelisted = loadstring(game:HttpGet(getgenv().autoreport.Words.Whitelist))()
+}
+
+local lib = {};
+local success, error = pcall(function()
+	function lib:notify(title, text)
+		(getgenv()).autoreport.library:MakeNotification({
+			Name = title,
+			Content = text,
+			Time = 3
+		});
+	end;
+	function lib:report(player, thing, reason, offensive)
+
+		for word, _ in next, messages.whitelisted do
+			if string.match(getgenv().autoreport.Message, word) then
+				return false;
+			end;
+		end;
+		if (getgenv()).autoreport.Webhook == "" or (getgenv()).autoreport.Webhook == nil then
+			lib:notify("Report", "Reported " .. player.Name .. " because of \"" .. (getgenv()).autoreport.Message .. "\"");
+		else
+				local data = 
+				{
+					["embeds"] = {{
+						["title"] = "**" .. gameName .. "**",
+						["description"] = "Auto-reported a player",
+						["type"] = "rich",
+						["color"] = tonumber(0x00aff4),
+						["url"] = "https://www.roblox.com/games/" .. game.PlaceId,
+						["fields"] = {
+							{
+								["name"] = "Name",
+								["value"] = "[" .. player.Name .. "](https://www.roblox.com/users/" .. player.UserId .. ")",
+								["inline"] = true
+							},
+							{
+								["name"] = "Message",
+								["value"] = getgenv().autoreport.Message,
+								["inline"] = true
+							},
+							{
+								["name"] = "Offensive part",
+								["value"] = offensive,
+								["inline"] = true
+							}
+						},
+						["footer"] = {
+							["text"] = "\nIf you think this is a mistake, contact water#1026 or skys#9826"
+						},
+						["author"] = {
+							["name"] = "Impact AR"
+						}
+					}}
+				}
+			local newdata = (game:GetService("HttpService")):JSONEncode(data);
+			local headers = {
+				["content-type"] = "application/json"
+			};
+			request = http_request or request or HttpPost or syn.request;
+			local abcdef = {
+				Url = (getgenv()).autoreport.Webhook,
+				Body = newdata,
+				Method = "POST",
+				Headers = headers
+			};
+			request(abcdef);
+		end;
+
+		for i = 1, (getgenv().autoreport.Safe and math.random(1,2) or math.random(5, 12)) do
+			wait(math.random(1, 15) / 10)
+			game.Players:ReportAbuse(player, thing, reason)
+		end;
+	end;
+
+	function handler(player, msg)
+		local thing, reason;
+		msg = string.lower(msg);
+		for i, v in next, messages.blacklisted do
+			if string.match(msg, i) then
+				thing, reason, offensive = v[1], v[2], i;
+				if (getgenv()).autoreport.Advertise == true then (game:GetService("ReplicatedStorage")).DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w " .. player.Name .. " you got mass reported by an Impact User", "All"); end;
+			end;
+		end;
+		if thing and reason and offensive then
+			lib:report(player, thing, reason, offensive);
+		end;
+	end;
+end);
+
+if not success then
+	error(error);
+end;
+
+for i, plr in pairs(game.Players:GetPlayers()) do
+	if plr ~= game.Players.LocalPlayer then
+		plr.Chatted:Connect(function(msg)
+			(getgenv()).autoreport.Message = msg;
+			handler(plr, msg);
+		end);
+	end;
+end;
+game.Players.PlayerAdded:Connect(function(plr)
+	if plr ~= game.Players.LocalPlayer then
+		plr.Chatted:Connect(function(msg)
+			(getgenv()).autoreport.Message = msg;
+			handler(plr, msg);
+		end);
+	end;
+end);
+
+(getgenv()).autoreport.library:MakeNotification({
+	Name = "Loaded!",
+	Content = "Script was made by skys#9826 and water",
+	Time = 8
+});
+
+(getgenv()).autoreport.library:MakeNotification({
+	Name = "Auto Report",
+	Content = "AR Loaded",
+	Time = 8
+});
 end)
 Tab1Section:NewButton("Inf Jump", "Plays Zombie Animation",function()
     local InfiniteJumpEnabled = true
