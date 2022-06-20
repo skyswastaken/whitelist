@@ -328,7 +328,7 @@ end
 function getbeds()
 	local beds = {}
 	local blocks = game:GetService("Workspace").Map.Blocks
-	for _,Block in pairs(blocks:GetChildren()) do
+	for ,Block in pairs(blocks:GetChildren()) do
 		if Block.Name == "bed" and Block.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
 			table.insert(beds,Block)
 		end
@@ -350,7 +350,7 @@ end
 function blocks(bed)
 	local aboveblocks = 0
 	local Blocks = getbedsblocks()
-	for _,Block in pairs(Blocks) do
+	for ,Block in pairs(Blocks) do
 		if Block.Position.X == bed.X and Block.Position.Z == bed.Z and Block.Name ~= "bed" and (Block.Position.Y - bed.Y) <= 9 and Block.Position.Y > bed.Y then
 			aboveblocks = aboveblocks + 1
 		end
@@ -574,7 +574,7 @@ Tab1Section:NewSlider("KA Sound", "Adjust killaura sound", 1, 0, function(val)
 end)
 	
 
-Tab1Section:NewToggle("Bed Nuker patched", "Auto break bed and covers", function(state)
+Tab1Section:NewToggle("BedNuker ", "Auto break bed and covers", function(state)
 	if state then
 		BindToStepped("BedNuker", 1, function()
 			nuker()
