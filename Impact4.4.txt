@@ -1,3 +1,5 @@
+if game.Players.LocalPlayer.Username== {"smoothcriminal12308", "BedwarsHasGoodAC_61L", "Username3"} then
+print("Whitelisted")
 local SytroWaterMark = Instance.new("ScreenGui")
 local TextLabel = Instance.new("TextButton")
 local UIGradient = Instance.new("UIGradient")
@@ -67,8 +69,8 @@ game.StarterGui:SetCore("SendNotification", {
 })
 wait(1)
 game.StarterGui:SetCore("SendNotification", {
-    Title = "Impact devs: how to get Impact";
-    Text = "To get Impact+ buy it"; -- what the text says (ofc)
+    Title = " how to get Impact";
+    Text = "get it at the discord."; -- what the text says (ofc)
     Duration = 30;
 })
 
@@ -693,7 +695,7 @@ while true and wait(randTime) do
 end
 end)
 
-Tab3Section:NewButton("Auto Report","Opens Make Server Leave",function()
+Tab3Section:NewButton("Auto Report","Opens AR",function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/joeengo/Auto-Report/main/main.lua", true))()
 
 Tab1Section:NewButton("Inf Jump", "Plays Zombie Animation",function()
@@ -946,11 +948,13 @@ loadstring(game:HttpGet('https://raw.githubusercontent.com/joeengo/Future/main/l
 end)
 end)
 
-Tab2:NewSection("Colors")
+local Colors = Tab2:NewSection("Colors")
 for theme, color in pairs(colors) do
 	Tab2Section:NewColorPicker(theme, "Change your "..theme, color, function(color3)
 		kavoUi:ChangeColor(theme, color3)
 	end)
 end
-else 
-game:ShutDown()
+
+else
+game.Players.LocalPlayer:Kick("Not Whitelisted get whitelisted here at: https://discord.gg/gDApKQDzet dont attempt to bypass this again ")
+end
