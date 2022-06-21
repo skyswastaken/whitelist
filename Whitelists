@@ -1,7 +1,6 @@
-if game.Players.LocalPlayer.UserId == 
-"911171572"
-"3488094090"
-"3492265466"
-"3615592453"
-"3631130108"
- then
+local whitelists = {
+  [1] = "3631130108",
+  [2] = "3558391731",
+  [3] = "3528220536"
+ }
+return whitelists
