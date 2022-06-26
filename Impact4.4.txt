@@ -357,7 +357,7 @@ end
 
 
 
-local kavoUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/vqfx/oavoui/main/KavoUiLib"))()
+local kavoUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/vqfx/SytroNight4ROBLOX/main/libraries/kavo.lua"))()
 local window = kavoUi.CreateLib("Impact  1.1b", "DarkTheme")
 local entity = loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/Libraries/entityHandler.lua", true))()
 
